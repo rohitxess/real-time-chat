@@ -10,6 +10,8 @@ export interface Chat{
     upvotes: string;
 }
 
+// class will have a constructor to initialize and methods to call  
+
 export abstract class Store {
     constructor() {
 

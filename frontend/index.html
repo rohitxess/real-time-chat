@@ -1,0 +1,29 @@
+
+<head>
+
+</head>
+<body>
+    
+    <script>
+        const ws = new WebSocket("ws://localhost:8080", "echo-protocol");
+        ws.open = function (){
+            ws.send(JSON.stringify({
+                name:"rohit",
+                userId: "1",
+                roomId: "2",
+            }));
+        }
+
+        function sendChat() {
+            ws.send(JSON.stringify({
+                type: "SEND_MESSAGE",
+                payload: {
+                    message: "hi there",
+                    userId: "1",
+                    roomId: "2"
+                }
+            }))
+        }
+    </script>
+    hello world 
+</body>
