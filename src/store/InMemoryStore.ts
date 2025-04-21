@@ -1,5 +1,7 @@
 import {Chat, Store, UserId} from "./Store"
 
+let globalChatId = 0;
+
 export interface Room {
     roomId: string;
     chats: Chat[]
@@ -12,25 +14,22 @@ export class InMemeoryStore implements Store {
     constructor() {
         this.store = new Map<string, Room>()
     }
-    upvote(userId: string, roomId: string, chatId: string) {
-        const room = this.store.get(roomId);
-        if(!room){
-            return
-        }
-    }
+
     initRoom(roomId: string){
         this.store.set(roomId, {
             roomId, 
             chats: []
         });
     }
-    
-    getChats(userID: UserId, roomId: string, limit: number, offset: number){
+
+    getChats(roomId: string, limit: number, offset: number){
         const room = this.store.get(roomId);
         if (!room){
             return []
         }
+        return room.chats.reverse().slice(0,offset).slice(-1 * limit);
     }
+
 
     addChat(userId: UserId, name: string, roomId: string, message: string){
         const room = this.store.get(roomId);
@@ -45,5 +44,26 @@ export class InMemeoryStore implements Store {
             upvotes: []
         })
     }
+
+    upvote(userId: UserId, roomId: string, chatId: string) {
+        const room = this.store.get(roomId);
+        if(!room){
+            return
+        }
+
+        //Todo: Make this faster
+
+        const chat = room.chats.find(({id} => id == chatId));
+
+        if (chat){
+            if (chat?.upvotes.find(x => x === userId)){
+                return chat;
+            }
+            chat.upvotes.push(userId);
+        }
+        return chat;
+    
+    }    
 }
+
 
